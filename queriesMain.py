@@ -36,7 +36,7 @@ print(wmi_zapytanie('caption', 'Win32_diskdrive'),'has total capacity of',wmi_za
 percentFreeSpace = math.ceil((wmi_zapytanie_GB('freespace','win32_logicaldisk')/(wmi_zapytanie_GB('size', 'Win32_diskdrive')))*100)
 
 print('C: has',wmi_zapytanie_GB('freespace','win32_logicaldisk'),'GB free,which is',percentFreeSpace, '%')
-
+print("RAM:")
 
 
 def bitlocker_key(linenumber):
