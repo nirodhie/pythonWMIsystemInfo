@@ -7,34 +7,36 @@ GB = 1073741824  # bytes 2 GB convert
 
 # computerName = input(r"\\")
 
-computerName = 'dtpolbn7004'
+computerName = '.'
 c = wmi.WMI(computerName)
 
 
 def wmi_zapytanie(wmi_value, wmi_class):
     wql = ("SELECT " + wmi_value + " FROM " + wmi_class)
     for result in c.query(wql):
-        print(getattr(result, wmi_value))
+        return(getattr(result, wmi_value))
 
 
 def wmi_zapytanie_GB(wmi_value, wmi_class):
     wql = ("SELECT " + wmi_value + " FROM " + wmi_class)
     for result in c.query(wql):
-        print(math.ceil(int(getattr(result, wmi_value)) / GB))
+        return(math.ceil(int(getattr(result, wmi_value)) / GB))
+
+print(wmi_zapytanie('vendor', 'win32_COMPUTERSYSTEMproduct'),wmi_zapytanie('model', 'win32_COMPUTERSYSTEM'))
+print('Service tag',wmi_zapytanie('serialnumber', 'win32_bios'))
+print('BIOS version',wmi_zapytanie('SMBIOSBIOSVersion', 'win32_bios'))
+print(wmi_zapytanie('OSArchitecture', 'win32_OperatingSystem'),'system')
+print('Logged in user',wmi_zapytanie('username', 'win32_COMPUTERSYSTEM'))
+print(wmi_zapytanie('name', 'Win32_Processor'))
+print('with',wmi_zapytanie('NumberOfCores', 'Win32_Processor'),'cores and ',wmi_zapytanie('NumberOfLogicalProcessors', 'Win32_Processor'),'logical processors')
+print('Attached disks:')
+print(wmi_zapytanie('caption', 'Win32_diskdrive'),'has total capacity of',wmi_zapytanie_GB('size', 'Win32_diskdrive'),'GB and',wmi_zapytanie('serialnumber', 'Win32_diskdrive'),'serial number')
 
 
-wmi_zapytanie('serialnumber', 'win32_bios')
-wmi_zapytanie('SMBIOSBIOSVersion', 'win32_bios')
-wmi_zapytanie('OSArchitecture', 'win32_OperatingSystem')
-wmi_zapytanie('model', 'win32_COMPUTERSYSTEM')
-wmi_zapytanie('vendor', 'win32_COMPUTERSYSTEMproduct')
-wmi_zapytanie('username', 'win32_COMPUTERSYSTEM')
-wmi_zapytanie('NumberOfCores', 'Win32_Processor')
-wmi_zapytanie('NumberOfLogicalProcessors', 'Win32_Processor')
-wmi_zapytanie('name', 'Win32_Processor')
-wmi_zapytanie_GB('size', 'Win32_diskdrive')
-wmi_zapytanie('caption', 'Win32_diskdrive')
-wmi_zapytanie('serialnumber', 'Win32_diskdrive')
+percentFreeSpace = math.ceil((wmi_zapytanie_GB('freespace','win32_logicaldisk')/(wmi_zapytanie_GB('size', 'Win32_diskdrive')))*100)
+
+print('C: has',wmi_zapytanie_GB('freespace','win32_logicaldisk'),'GB free,which is',percentFreeSpace, '%')
+
 
 
 def bitlocker_key(linenumber):
@@ -46,4 +48,4 @@ def bitlocker_key(linenumber):
     return output_as_list[linenumber]
 
 
-print(bitlocker_key(9).lstrip())
+# print(bitlocker_key(9).lstrip())
